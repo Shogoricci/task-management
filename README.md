@@ -5,7 +5,7 @@
 ⚫︎ タスクの進捗が管理できてないことがあり、タスク管理を簡単に実施出来るツールを作った。
 
 ③アプリのデプロイURL
-⚫︎ 
+⚫︎ https://shogoricci.github.io/task-management/
 
 ④アプリのログイン用IDまたはPassword（ある場合）
 ⚫︎ 
