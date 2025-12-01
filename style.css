@@ -1,0 +1,123 @@
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 480px;
+    background: #fff;
+    padding: 20px 24px 24px;
+    margin: 60px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 22px;
+    margin: 0 0 15px;
+    text-align: center;
+}
+
+.input-area {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+#taskInput {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+#taskInput:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+button {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    background: #4CAF50;
+    color: #fff;
+    white-space: nowrap;
+    transition: transform 0.05s ease, box-shadow 0.05s ease, opacity 0.15s ease;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+button.danger {
+    width: 100%;
+    margin-top: 12px;
+    background: #f44336;
+}
+
+#taskInfo {
+    font-size: 13px;
+    color: #555;
+    margin: 4px 0 10px;
+}
+
+/* タスクリスト */
+#taskList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#taskList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+#taskList li.done {
+    opacity: 0.7;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.task-checkbox {
+    width: 16px;
+    height: 16px;
+}
+
+.task-text {
+    font-size: 14px;
+    word-break: break-all;
+}
+
+#taskList li.done .task-text {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.delete-btn {
+    background: #f44336;
+    padding: 6px 10px;
+    font-size: 12px;
+}

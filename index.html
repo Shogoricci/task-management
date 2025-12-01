@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>localStorageタスク管理</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>タスク管理（localStorage）</h1>
+
+        <!-- タスク入力エリア -->
+        <div class="input-area">
+            <input type="text" id="taskInput" placeholder="タスクを入力して Enter または『追加』">
+            <button id="addBtn">追加</button>
+        </div>
+
+        <!-- 残タスク表示 -->
+        <p id="taskInfo">登録タスク：0件（未完了：0件）</p>
+
+        <!-- タスクリスト -->
+        <ul id="taskList"></ul>
+
+        <!-- 全削除ボタン -->
+        <button id="clearAllBtn" class="danger">すべてのタスクを削除</button>
+    </div>
+
+    <script>
+        // ====== グローバル変数 ======
+        let tasks = []; // {id, text, done}
+
+        // ====== 初期化処理 ======
+        document.addEventListener("DOMContentLoaded", () => {
+            loadTasksFromStorage();
+            renderTasks();
+
+            document.getElementById("addBtn").addEventListener("click", addTaskFromInput);
+
+            document.getElementById("taskInput").addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    addTaskFromInput();
+                }
+            });
+
+            document.getElementById("clearAllBtn").addEventListener("click", clearAllTasks);
+
+            // タスクリストのイベント委譲（チェック/削除）
+            document.getElementById("taskList").addEventListener("click", (e) => {
+                const li = e.target.closest("li");
+                if (!li) return;
+                const id = li.dataset.id;
+
+                // チェックボックス変更
+                if (e.target.classList.contains("task-checkbox")) {
+                    toggleTaskDone(id);
+                }
+
+                // 削除ボタン
+                if (e.target.classList.contains("delete-btn")) {
+                    deleteTask(id);
+                }
+            });
+        });
+
+        // ====== localStorage 関連 ======
+        const STORAGE_KEY = "myTasks";
+
+        function saveTasksToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        }
+
+        function loadTasksFromStorage() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (data) {
+                try {
+                    tasks = JSON.parse(data);
+                } catch (e) {
+                    console.error("JSONのパースに失敗しました。初期化します。", e);
+                    tasks = [];
+                }
+            }
+        }
+
+        // ====== タスク操作 ======
+        function addTaskFromInput() {
+            const input = document.getElementById("taskInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            const newTask = {
+                id: String(Date.now()), // 一意なID
+                text: text,
+                done: false
+            };
+
+            tasks.push(newTask);
+            saveTasksToStorage();
+            renderTasks();
+
+            input.value = "";
+            input.focus();
+        }
+
+        function toggleTaskDone(id) {
+            tasks = tasks.map(task =>
+                task.id === id ? { ...task, done: !task.done } : task
+            );
+            saveTasksToStorage();
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(task => task.id !== id);
+            saveTasksToStorage();
+            renderTasks();
+        }
+
+        function clearAllTasks() {
+            if (!confirm("本当にすべてのタスクを削除しますか？")) return;
+            tasks = [];
+            saveTasksToStorage();
+            renderTasks();
+        }
+
+        // ====== 画面描画 ======
+        function renderTasks() {
+            const list = document.getElementById("taskList");
+            list.innerHTML = "";
+
+            tasks.forEach(task => {
+                const li = document.createElement("li");
+                li.dataset.id = task.id;
+                li.className = task.done ? "done" : "";
+
+                li.innerHTML = `
+          <label class="task-item">
+            <input type="checkbox" class="task-checkbox" ${task.done ? "checked" : ""}>
+            <span class="task-text">${escapeHtml(task.text)}</span>
+          </label>
+          <button class="delete-btn">削除</button>
+        `;
+                list.appendChild(li);
+            });
+
+            updateTaskInfo();
+        }
+
+        function updateTaskInfo() {
+            const total = tasks.length;
+            const undone = tasks.filter(t => !t.done).length;
+            document.getElementById("taskInfo").textContent =
+                `登録タスク：${total}件（未完了：${undone}件）`;
+        }
+
+        // XSS対策用：簡易エスケープ
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+
+</body>
+
+</html>
